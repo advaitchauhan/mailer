@@ -1,0 +1,1 @@
+You can use mailer to send customized versions of an email to a list of recipients. 
