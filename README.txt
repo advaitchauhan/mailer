@@ -22,5 +22,7 @@ Adi
 Example corresponding data.csv
 ------------------------------------------------------------------------------
 tom@gmail.com, 		Thomas,		brownies,			eating them
+
 dick@yahoo.com,		Richard,	vinyl records,		listening to them
+
 harry@hotmail.com,	Harry,		shirt,				folding it		
