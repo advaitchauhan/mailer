@@ -11,6 +11,7 @@ import smtplib
 GMAIL_LOGIN = "achauhan@princeton.edu"
 GMAIL_PASSWORD = "etotheeyepie2195"
 SUBJECT = "Princeton University Start-Up Career Fair"
+SENDER = "Advait Chauhan <achauhan@princeton.edu>"
 
 #You need to attach a subject body .txt file
 #which has a /#i#/ in place of every token that needs to be replaced,
@@ -23,29 +24,28 @@ SUBJECT = "Princeton University Start-Up Career Fair"
 #replacement denotations in the body txt file.
 
 # ===== PROGRAM ==========#
-#send email method
-def send_email(recipient, subject, body):
-    SMTP_SERVER = 'smtp.gmail.com'
-    SMTP_PORT = 587
+#email method
+def email(recipient, subject, body):
     gmail_sender = GMAIL_LOGIN
     password = GMAIL_PASSWORD
+    sender = SENDER
 
-    sender = "Advait Chauhan <achauhan@princeton.edu>"
-    headers = ["From: " + sender,
+    # body_of_email (can be plaintext or html!) 
+    headers = "\r\n".join(["From: " + sender,
                "Subject: " + subject,
                "To: " + recipient,
                "MIME-Version: 1.0",
-               "Content-Type: text/txt"]
-    headers = "\r\n".join(headers)
+               "Content-Type: text/txt"]) 
 
-    session = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
+    message = headers + "\r\n\r\n" + body
 
+	#log in and send the email
+    session = smtplib.SMTP('smtp.gmail.com', 587)
     session.ehlo()
     session.starttls()
     session.ehlo
     session.login(gmail_sender, password)
-
-    session.sendmail(sender, recipient, headers + "\r\n\r\n" + body)
+    session.sendmail(sender, recipient, message)
     session.quit()
 
 #main method
@@ -54,21 +54,25 @@ if __name__ == "__main__":
 #later make this sys.argv[1])
 	subject = SUBJECT
 
+	#read in the csv data file
+	data = open("dataTest.csv", 'rU')
+	csv_data = csv.reader(data, dialect='excel')
+
+	#read in the body file
 	f = open("body.txt", 'r')
 	org_body = f.read()
 	f.close()
-	
 	body = org_body
-	data = open("data.csv", 'rU')
-	csv_data = csv.reader(data, dialect='excel')
 
+	#for each row in the data file (AKA email to send),
+	#make the replacements found in each column
 	for row in csv_data:
 		rcpt = row[0]
-		print rcpt
+		#print rcpt
 		for i in range (1, len(row)):
 			r = "/#" + str(i) + "#/"
 			body = body.replace(r, row[i])
-		send_email(rcpt, subject, body)
+		email(rcpt, subject, body)
 		body = org_body
 
 
